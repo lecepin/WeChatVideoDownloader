@@ -1,0 +1,110 @@
+{
+  "name": "electron-react-tpl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build-electron/index.js",
+  "homepage": "./",
+  "scripts": {
+    "postinstall": "husky install",
+    "start": "concurrently \"cross-env BROWSER=none npm run start-web\"  \"wait-on http://localhost:3000 && npm run start-electron\" ",
+    "start-web": "react-app-rewired start",
+    "start-electron": "parcel build --target electron --no-cache && electron .",
+    "build-web": "react-app-rewired build",
+    "build-electron": "parcel build --target electron --no-cache",
+    "build-all": "rm -rf ./build && rm -rf ./build-electron && npm run build-electron && npm run build-web",
+    "pack": "npm run build-all && electron-builder",
+    "gen-icon": "electron-icon-builder --input=./public/icon/icon.png --output=./public/icon"
+  },
+  "targets": {
+    "electron": {
+      "source": "electron/index.js",
+      "context": "electron-main",
+      "distDir": "build-electron"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "prettier -c --write \"(src/**/*|electron/**/*)\" && git add -A ."
+    }
+  },
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "customize-cra": "^1.0.0",
+    "electron": "^18.2.3",
+    "electron-builder": "^23.0.3",
+    "electron-icon-builder": "^2.0.1",
+    "husky": "^8.0.1",
+    "less": "^4.1.2",
+    "less-loader": "^11.0.0",
+    "parcel": "^2.5.0",
+    "prettier": "^2.6.2",
+    "react-app-rewired": "^2.2.1",
+    "react-scripts": "5.0.1",
+    "wait-on": "^6.0.1"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "electron-is-dev": "^2.0.0",
+    "electron-log": "^4.4.7",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "semver": "^7.3.7"
+  },
+  "author": "lecepin",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lecepin/electron-react-tpl.git"
+  },
+  "build": {
+    "extends": null,
+    "productName": "Lecepin Tpl",
+    "appId": "com.lecepin.tpl",
+    "directories": {
+      "output": "packs"
+    },
+    "npmRebuild": false,
+    "files": [
+      "build/**/*",
+      "build-electron/**/*",
+      "public/**/*"
+    ],
+    "mac": {
+      "icon": "public/icon/icons/mac/icon.icns"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "public/icon/icons/win/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true
+    },
+    "extraResources": [
+      "public"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

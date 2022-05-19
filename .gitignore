@@ -1,0 +1,30 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build-web
+/build-electron
+/build
+/dist
+/packs
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+yarn.lock
+package-lock.json
+
+.parcel-cache
