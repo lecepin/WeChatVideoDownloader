@@ -1,30 +1,13 @@
-import logo from './logo.png';
-import { shell } from 'electron';
-import './App.css';
+import { useMachine } from '@xstate/react';
+import fsm from './fsm';
+
+import './App.less';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          onClick={e => {
-            e.preventDefault();
-            shell.openExternal('https://github.com/lecepin/electron-react-tpl');
-          }}
-          className="App-link"
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Open Github
-        </a>
-      </header>
-    </div>
-  );
+  const [state, send] = useMachine(fsm);
+  const {} = state.context;
+
+  return <div className="App">App</div>;
 }
 
 export default App;

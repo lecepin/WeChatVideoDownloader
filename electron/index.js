@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import log from 'electron-log';
 import CONFIG from './const';
 import { checkUpdate } from './utils';
@@ -8,7 +8,7 @@ import { installCert } from './cert';
 app.commandLine.appendSwitch('--no-proxy-server');
 
 function createWindow() {
-  // electron.Menu.setApplicationMenu(null);
+  Menu.setApplicationMenu(null);
   checkUpdate(
     'https://cdn.jsdelivr.net/gh/lecepin/electron-react-tpl/package.json',
     'https://github.com/lecepin/electron-react-tpl/releases',
@@ -26,15 +26,8 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL('https://baidu.com' ?? CONFIG.APP_START_URL);
+  mainWindow.loadURL(CONFIG.APP_START_URL);
   CONFIG.IS_DEV && mainWindow.webContents.openDevTools();
-  installCert()
-    .then(data => {
-      console.log('install cert success', data);
-    })
-    .catch(err => {
-      log.error('err', err);
-    });
 }
 
 app.whenReady().then(() => {
