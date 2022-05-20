@@ -8,12 +8,13 @@
     "postinstall": "husky install",
     "start": "concurrently \"cross-env BROWSER=none npm run start-web\"  \"wait-on http://localhost:3000 && npm run start-electron\" ",
     "start-web": "react-app-rewired start",
-    "start-electron": "parcel build --target electron --no-cache && electron .",
+    "start-electron": "webpack --config webpack.electron.js && electron .",
     "build-web": "react-app-rewired build",
-    "build-electron": "parcel build --target electron --no-cache",
+    "build-electron": "webpack --config webpack.electron.js",
     "build-all": "rm -rf ./build && rm -rf ./build-electron && npm run build-electron && npm run build-web",
     "pack": "npm run build-all && electron-builder",
-    "gen-icon": "electron-icon-builder --input=./public/icon/icon.png --output=./public/icon"
+    "gen-icon": "electron-icon-builder --input=./public/icon/icon.png --output=./public/icon",
+    "pretty": "prettier -c --write \"(src/**/*|electron/**/*)\""
   },
   "targets": {
     "electron": {
@@ -41,15 +42,22 @@
     "prettier": "^2.6.2",
     "react-app-rewired": "^2.2.1",
     "react-scripts": "5.0.1",
-    "wait-on": "^6.0.1"
+    "wait-on": "^6.0.1",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
   },
   "dependencies": {
     "axios": "^0.27.2",
     "electron-is-dev": "^2.0.0",
     "electron-log": "^4.4.7",
+    "get-port": "^6.1.2",
+    "hoxy": "^3.3.1",
+    "mkdirp": "^1.0.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "semver": "^7.3.7"
+    "regedit": "^5.1.1",
+    "semver": "^7.3.7",
+    "sudo-prompt": "^9.2.1"
   },
   "author": "lecepin",
   "license": "ISC",

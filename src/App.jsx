@@ -1,6 +1,6 @@
-import logo from "./logo.png";
-import { shell } from "electron";
-import "./App.css";
+import logo from './logo.png';
+import { shell } from 'electron';
+import './App.css';
 
 function App() {
   return (
@@ -11,9 +11,9 @@ function App() {
           Edit <code>src/App.js</code> and save to reload.
         </p>
         <a
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
-            shell.openExternal("https://github.com/lecepin/electron-react-tpl");
+            shell.openExternal('https://github.com/lecepin/electron-react-tpl');
           }}
           className="App-link"
           href="#"
