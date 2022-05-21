@@ -1,5 +1,5 @@
 {
-  "name": "electron-react-tpl",
+  "name": "wechat-video-downloader",
   "version": "1.0.0",
   "description": "",
   "main": "./build-electron/index.js",
@@ -70,12 +70,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lecepin/electron-react-tpl.git"
+    "url": "git+https://github.com/lecepin/WeChatVideoDownloader.git"
   },
   "build": {
     "extends": null,
-    "productName": "Lecepin Tpl",
-    "appId": "com.lecepin.tpl",
+    "productName": "Lecepin WeChatVideoDownloader",
+    "appId": "com.lecepin.WeChatVideoDownloader",
     "directories": {
       "output": "packs"
     },

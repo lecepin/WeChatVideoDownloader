@@ -10,8 +10,8 @@ process.on('unhandledRejection', () => {});
 function createWindow() {
   Menu.setApplicationMenu(null);
   checkUpdate(
-    'https://cdn.jsdelivr.net/gh/lecepin/electron-react-tpl/package.json',
-    'https://github.com/lecepin/electron-react-tpl/releases',
+    'https://cdn.jsdelivr.net/gh/lecepin/WeChatVideoDownloader/package.json',
+    'https://github.com/lecepin/WeChatVideoDownloader/releases',
   );
 
   const mainWindow = new BrowserWindow({
