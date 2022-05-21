@@ -1,9 +1,11 @@
 import { app, BrowserWindow, Menu } from 'electron';
 import CONFIG from './const';
 import { checkUpdate } from './utils';
-import initIPC from './ipc';
+import initIPC, { setWin } from './ipc';
 
 app.commandLine.appendSwitch('--no-proxy-server');
+process.on('uncaughtException', () => {});
+process.on('unhandledRejection', () => {});
 
 function createWindow() {
   Menu.setApplicationMenu(null);
@@ -24,6 +26,7 @@ function createWindow() {
     },
   });
 
+  setWin(mainWindow);
   mainWindow.loadURL(CONFIG.APP_START_URL);
   CONFIG.IS_DEV && mainWindow.webContents.openDevTools();
 }

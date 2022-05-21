@@ -1,20 +1,142 @@
 import { useMachine } from '@xstate/react';
+import { Table, Button, Progress, Alert } from 'antd';
+import { shell } from 'electron';
+import {
+  DownloadOutlined,
+  PlaySquareOutlined,
+  ClearOutlined,
+  GithubOutlined,
+  EyeOutlined,
+  FormatPainterOutlined,
+  RedoOutlined,
+} from '@ant-design/icons';
 import fsm from './fsm';
 
 import './App.less';
 function App() {
   const [state, send] = useMachine(fsm);
-  const {} = state.context;
+  const { captureList, currentUrl, downloadProgress } = state.context;
 
   return (
     <div className="App">
       {state.matches('检测初始化') ? <div>检测中……</div> : null}
-      {state.matches('初始化完成') ? <div>初始化完成</div> : null}
+      {state.matches('初始化完成') ? (
+        <div className="App-inited">
+          <Button
+            className="App-inited-clear"
+            icon={<ClearOutlined />}
+            onClick={() => send('e_清空捕获记录')}
+          >
+            清空
+          </Button>
+          <Button
+            className="App-inited-github"
+            icon={<GithubOutlined />}
+            onClick={() => shell.openExternal('https://github.com/lecepin/WeChatVideoDownloader')}
+            type="primary"
+            ghost
+          >
+            Star
+          </Button>
+          <Table
+            sticky
+            dataSource={captureList}
+            columns={[
+              {
+                title: '视频地址（捕获中……）',
+                dataIndex: 'url',
+                key: 'url',
+                render: value => value,
+                ellipsis: true,
+              },
+              {
+                title: '大小',
+                dataIndex: 'prettySize',
+                key: 'prettySize',
+                width: '100px',
+                render: value => value,
+              },
+              {
+                title: '操作',
+                dataIndex: 'action',
+                key: 'action',
+                width: '200px',
+                render: (_, { url, fullFileName }) => (
+                  <div>
+                    {fullFileName ? (
+                      <Button
+                        icon={<EyeOutlined />}
+                        type="primary"
+                        onClick={() => {
+                          shell.openPath(fullFileName);
+                        }}
+                        size="small"
+                        ghost
+                      >
+                        查看
+                      </Button>
+                    ) : (
+                      <Button
+                        icon={<DownloadOutlined />}
+                        type="primary"
+                        onClick={() => {
+                          send({ type: 'e_下载', url });
+                        }}
+                        size="small"
+                      >
+                        下载
+                      </Button>
+                    )}
+                    &nbsp; &nbsp;
+                    <Button
+                      icon={<PlaySquareOutlined />}
+                      onClick={() => {
+                        send({ type: 'e_预览', url });
+                      }}
+                      size="small"
+                    >
+                      预览
+                    </Button>
+                  </div>
+                ),
+              },
+            ]}
+            pagination={{ position: ['none', 'none'] }}
+          ></Table>
+
+          {state.matches('初始化完成.预览') ? (
+            <div
+              className="App-inited-preview"
+              onClick={e => {
+                e.target == e.currentTarget && send('e_关闭');
+              }}
+            >
+              <video src={currentUrl} controls autoPlay></video>
+            </div>
+          ) : null}
+
+          {state.matches('初始化完成.下载.下载中') ? (
+            <div className="App-inited-download">
+              <Progress type="circle" percent={downloadProgress} />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
       {state.matches('未初始化') ? (
-        <div>
-          <p>未初始化</p>
-          <button onClick={() => send('e_开始初始化')}>初始化</button>
-          <button onClick={() => send('e_重新检测')}>重新检测</button>
+        <div className="App-uninit">
+          <Alert message="首次进入，请先初始化~" type="warning" showIcon closable={false} />
+          <Button
+            size="large"
+            onClick={() => send('e_开始初始化')}
+            type="primary"
+            icon={<FormatPainterOutlined />}
+          >
+            初始化
+          </Button>
+          &nbsp;&nbsp;
+          <Button size="large" onClick={() => send('e_重新检测')} icon={<RedoOutlined />}>
+            重新检测
+          </Button>
         </div>
       ) : null}
     </div>

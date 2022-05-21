@@ -48,13 +48,17 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@xstate/react": "^3.0.0",
+    "antd": "^4.20.5",
     "axios": "^0.27.2",
     "electron-is-dev": "^2.0.0",
     "electron-log": "^4.4.7",
     "get-port": "^6.1.2",
     "hoxy": "^3.3.1",
+    "lodash": "^4.17.21",
     "mkdirp": "^1.0.4",
+    "pretty-bytes": "^6.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "regedit": "5.0.0",

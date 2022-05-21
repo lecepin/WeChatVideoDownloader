@@ -1,10 +1,18 @@
-import { createMachine } from 'xstate';
+import { createMachine, actions } from 'xstate';
 import { ipcRenderer } from 'electron';
+import prettyBytes from 'pretty-bytes';
+import { uniqBy } from 'lodash';
+import { message } from 'antd';
 
 export default createMachine(
   {
     id: '微信视频号下载工具',
-    context: {},
+    context: {
+      captureList: [],
+      currentUrl: '',
+      savePath: '',
+      downloadProgress: 0,
+    },
     initial: '检测初始化',
     states: {
       检测初始化: {
@@ -54,14 +62,22 @@ export default createMachine(
           e_视频捕获: {
             actions: 'action_视频捕获',
           },
+          e_开启服务失败: {
+            target: '开启服务失败',
+          },
+          e_清空捕获记录: {
+            actions: 'action_清空捕获记录',
+          },
         },
         states: {
           空闲: {
             on: {
               e_下载: {
+                actions: 'action_设置当前地址',
                 target: '下载',
               },
               e_预览: {
+                actions: 'action_设置当前地址',
                 target: '预览',
               },
               e_改变规则: {
@@ -74,8 +90,11 @@ export default createMachine(
             states: {
               选择位置: {
                 on: {
-                  e_确认位置: { target: '下载中' },
+                  e_确认位置: { actions: 'action_存储下载位置', target: '下载中' },
                   e_取消: { target: '#初始化完成.空闲' },
+                },
+                invoke: {
+                  src: 'invoke_选择下载位置',
                 },
               },
               下载中: {
@@ -84,12 +103,16 @@ export default createMachine(
                     actions: 'action_进度变化',
                   },
                   e_下载完成: {
-                    target: '下载完成',
+                    target: '#初始化完成.空闲',
+                    actions: 'action_下载完成',
                   },
                   e_下载失败: {
                     target: '#初始化完成.空闲',
                     actions: 'action_下载失败',
                   },
+                },
+                invoke: {
+                  src: 'invoke_下载视频',
                 },
               },
               下载完成: {
@@ -108,6 +131,13 @@ export default createMachine(
                 target: '空闲',
               },
             },
+          },
+        },
+      },
+      开启服务失败: {
+        on: {
+          e_重试: {
+            target: '初始化完成',
           },
         },
       },
@@ -131,17 +161,102 @@ export default createMachine(
           .finally(() => send('e_重新检测'));
       },
       invoke_启动服务: (context, event) => send => {
-        ipcRenderer.invoke('invoke_启动服务');
-        // .then(data => {})
-        // .catch(data => {});
+        const fnDealVideoCapture = (eName, { url, size }) => {
+          send({ type: 'e_视频捕获', url, size });
+        };
+
+        ipcRenderer
+          .invoke('invoke_启动服务')
+          .then(() => {
+            ipcRenderer.on('VIDEO_CAPTURE', fnDealVideoCapture);
+          })
+          .catch(() => {
+            send('e_开启服务失败');
+          });
+
+        return () => {
+          ipcRenderer.removeListener('VIDEO_CAPTURE', fnDealVideoCapture);
+        };
       },
+      invoke_选择下载位置: (context, event) => send => {
+        ipcRenderer
+          .invoke('invoke_选择下载位置')
+          .then(data => {
+            send({
+              type: 'e_确认位置',
+              data,
+            });
+          })
+          .catch(() => send('e_取消'));
+      },
+      invoke_下载视频:
+        ({ currentUrl, savePath }) =>
+        send => {
+          ipcRenderer
+            .invoke('invoke_下载视频', {
+              url: currentUrl,
+              savePath,
+            })
+            .then(({ fullFileName }) => {
+              send({ type: 'e_下载完成', fullFileName, currentUrl });
+            })
+            .catch(() => {
+              send('e_下载失败');
+            });
+
+          ipcRenderer.on('e_进度变化', (event, arg) => {
+            send({
+              type: 'e_进度变化',
+              data: arg,
+            });
+          });
+
+          return () => {
+            ipcRenderer.removeAllListeners('e_进度变化');
+          };
+        },
     },
     actions: {
-      action_视频捕获: (context, event) => {},
-      action_改变规则: (context, event) => {},
-      action_进度变化: (context, event) => {},
-      action_下载失败: (context, event) => {},
-      action_打开文件位置: (context, event) => {},
+      action_视频捕获: actions.assign(({ captureList }, { size, url }) => {
+        captureList.push({ size, url, prettySize: prettyBytes(+size) });
+
+        return {
+          captureList: uniqBy(captureList, 'url'),
+        };
+      }),
+      action_清空捕获记录: actions.assign(() => {
+        return {
+          captureList: [],
+        };
+      }),
+      action_设置当前地址: actions.assign((_, { url }) => {
+        return {
+          currentUrl: url,
+        };
+      }),
+      action_存储下载位置: actions.assign((_, { data }) => {
+        return {
+          savePath: data,
+        };
+      }),
+      action_进度变化: actions.assign((_, { data }) => {
+        return {
+          downloadProgress: ~~(data * 100),
+        };
+      }),
+      action_下载完成: actions.assign(({ captureList }, { fullFileName, currentUrl }) => {
+        return {
+          captureList: captureList.map(item => {
+            if (item.url === currentUrl) {
+              item.fullFileName = fullFileName;
+            }
+            return item;
+          }),
+        };
+      }),
+      action_下载失败: actions.log(() => {
+        message.error('网络错误，请重试');
+      }),
     },
   },
 );
