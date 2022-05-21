@@ -1,4 +1,3 @@
-import path from 'path';
 import fs from 'fs';
 import hoxy from 'hoxy';
 import getPort from 'get-port';
@@ -6,7 +5,7 @@ import { app } from 'electron';
 import CONFIG from './const';
 import { setProxy, closeProxy } from './setProxy';
 
-export async function startServer({ interceptCallback = f => f, errorCallback = f => f }) {
+export async function startServer({ interceptCallback = f => f, setProxyErrorCallback = f => f }) {
   const port = await getPort();
   const proxy = hoxy
     .createServer({
@@ -16,7 +15,10 @@ export async function startServer({ interceptCallback = f => f, errorCallback = 
       },
     })
     .listen(port, () => {
-      setProxy('127.0.0.1', port).catch(errorCallback);
+      setProxy('127.0.0.1', port).catch(setProxyErrorCallback);
+    })
+    .on('error', e => {
+      console.log('proxy lib error', e);
     });
 
   proxy.intercept(

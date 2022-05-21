@@ -1,9 +1,7 @@
 import { app, BrowserWindow, Menu } from 'electron';
-import log from 'electron-log';
 import CONFIG from './const';
 import { checkUpdate } from './utils';
-import { startServer } from './proxyServer';
-import { installCert } from './cert';
+import initIPC from './ipc';
 
 app.commandLine.appendSwitch('--no-proxy-server');
 
@@ -31,6 +29,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  initIPC();
   createWindow();
 
   app.on('activate', () => {

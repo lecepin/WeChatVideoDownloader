@@ -31,4 +31,5 @@ export default {
   WIN_CERT_INSTALL_HELPER: path.join(EXECUTABLE_PATH, './w_c.exe'),
   APP_CN_NAME: '微信视频号下载器',
   APP_EN_NAME: 'WeChat Video Downloader',
+  REGEDIT_VBS_PATH: path.join(EXECUTABLE_PATH, './regedit-vbs'),
 };

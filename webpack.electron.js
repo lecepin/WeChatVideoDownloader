@@ -9,7 +9,10 @@ module.exports = {
   module: {
     rules: [],
   },
-  devtool: false && 'source-map',
+  devtool: 'source-map',
   target: 'electron-main',
   node: false,
+  stats: {
+    errorDetails: true,
+  },
 };

@@ -7,8 +7,10 @@
   "scripts": {
     "postinstall": "husky install",
     "start": "concurrently \"cross-env BROWSER=none npm run start-web\"  \"wait-on http://localhost:3000 && npm run start-electron\" ",
+    "start-debug": "concurrently \"cross-env BROWSER=none npm run start-web\"  \"wait-on http://localhost:3000 && npm run debug-electron\" ",
     "start-web": "react-app-rewired start",
     "start-electron": "webpack --config webpack.electron.js && electron .",
+    "debug-electron": "webpack --config webpack.electron.js && electron --inspect --unhandled-rejections=strict --trace-deprecation .",
     "build-web": "react-app-rewired build",
     "build-electron": "webpack --config webpack.electron.js",
     "build-all": "rm -rf ./build && rm -rf ./build-electron && npm run build-electron && npm run build-web",
@@ -56,7 +58,7 @@
     "mkdirp": "^1.0.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "regedit": "^5.1.1",
+    "regedit": "5.0.0",
     "semver": "^7.3.7",
     "sudo-prompt": "^9.2.1",
     "xstate": "^4.32.1"

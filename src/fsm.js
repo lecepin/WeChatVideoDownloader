@@ -47,6 +47,9 @@ export default createMachine(
       初始化完成: {
         initial: '空闲',
         id: '初始化完成',
+        invoke: {
+          src: 'invoke_启动服务',
+        },
         on: {
           e_视频捕获: {
             actions: 'action_视频捕获',
@@ -112,8 +115,26 @@ export default createMachine(
   },
   {
     services: {
-      invoke_初始化信息: (context, event) => send => {},
-      invoke_开始初始化: (context, event) => send => {},
+      invoke_初始化信息: () => send => {
+        ipcRenderer.invoke('invoke_初始化信息').then(data => {
+          if (data === true) {
+            send('e_初始化完成');
+          } else {
+            send('e_未初始化');
+          }
+        });
+      },
+      invoke_开始初始化: (context, event) => send => {
+        ipcRenderer
+          .invoke('invoke_开始初始化')
+          .catch(() => {})
+          .finally(() => send('e_重新检测'));
+      },
+      invoke_启动服务: (context, event) => send => {
+        ipcRenderer.invoke('invoke_启动服务');
+        // .then(data => {})
+        // .catch(data => {});
+      },
     },
     actions: {
       action_视频捕获: (context, event) => {},

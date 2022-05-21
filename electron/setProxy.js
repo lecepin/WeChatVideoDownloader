@@ -1,5 +1,8 @@
 import { exec } from 'child_process';
 import regedit from 'regedit';
+import CONFIG from './const';
+
+regedit.setExternalVBSLocation(CONFIG.REGEDIT_VBS_PATH);
 
 export async function setProxy(host, port) {
   if (process.platform === 'darwin') {
@@ -24,7 +27,7 @@ export async function setProxy(host, port) {
     );
   } else {
     const valuesToPut = {
-      'HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings': {
+      'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings': {
         ProxyServer: {
           value: `${host}:${port}`,
           type: 'REG_SZ',
@@ -35,7 +38,7 @@ export async function setProxy(host, port) {
         },
       },
     };
-    return editWinRegPromise(valuesToPut);
+    return regedit.promisified.putValue(valuesToPut);
   }
 }
 
@@ -62,14 +65,14 @@ export async function closeProxy() {
     );
   } else {
     const valuesToPut = {
-      'HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings': {
+      'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings': {
         ProxyEnable: {
           value: 0,
           type: 'REG_DWORD',
         },
       },
     };
-    return editWinRegPromise(valuesToPut);
+    return regedit.promisified.putValue(valuesToPut);
   }
 }
 
@@ -100,18 +103,6 @@ function getMacAvailableNetworks() {
         ).then(networks => {
           resolve(networks.filter(Boolean));
         });
-      }
-    });
-  });
-}
-
-function editWinRegPromise(valuesToPut) {
-  return new Promise((resolve, reject) => {
-    regedit.putValue(valuesToPut, function (err) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
       }
     });
   });
