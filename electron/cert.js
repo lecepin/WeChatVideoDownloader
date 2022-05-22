@@ -2,8 +2,8 @@ import CONFIG from './const';
 import mkdirp from 'mkdirp';
 import fs from 'fs';
 import path from 'path';
-import sudo from 'sudo-prompt';
 import { clipboard, dialog } from 'electron';
+import spawn from 'cross-spawn';
 
 export function checkCertInstalled() {
   return fs.existsSync(CONFIG.INSTALL_CERT_FLAG);
@@ -30,18 +30,19 @@ export async function installCert(checkInstalled = true) {
     });
   } else {
     return new Promise((resolve, reject) => {
-      sudo.exec(
-        `${CONFIG.WIN_CERT_INSTALL_HELPER} -c -add ${CONFIG.CERT_PUBLIC_PATH} -s root`,
-        { name: CONFIG.APP_EN_NAME },
-        (error, stdout) => {
-          if (error) {
-            reject(error);
-          } else {
-            fs.writeFileSync(CONFIG.INSTALL_CERT_FLAG, '');
-            resolve(stdout);
-          }
-        },
-      );
+      const result = spawn.sync(CONFIG.WIN_CERT_INSTALL_HELPER, [
+        '-c',
+        '-add',
+        CONFIG.CERT_PUBLIC_PATH,
+        '-s',
+        'root',
+      ]);
+
+      if (result.stdout.toString().indexOf('Succeeded') > -1) {
+        resolve();
+      } else {
+        reject();
+      }
     });
   }
 }

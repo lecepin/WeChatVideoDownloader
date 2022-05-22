@@ -139,6 +139,14 @@ function App() {
           </Button>
         </div>
       ) : null}
+      {state.matches('开启服务失败') ? (
+        <div className="App-uninit">
+          <Alert message="开启服务失败，请允许开启" type="error" showIcon closable={false} />
+          <Button size="large" onClick={() => send('e_重试')} type="primary">
+            尝试开启
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

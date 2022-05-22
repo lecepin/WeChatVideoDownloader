@@ -52,6 +52,7 @@
     "@xstate/react": "^3.0.0",
     "antd": "^4.20.5",
     "axios": "^0.27.2",
+    "cross-spawn": "^7.0.3",
     "electron-is-dev": "^2.0.0",
     "electron-log": "^4.4.7",
     "get-port": "^6.1.2",
@@ -63,7 +64,6 @@
     "react-dom": "^18.1.0",
     "regedit": "5.0.0",
     "semver": "^7.3.7",
-    "sudo-prompt": "^9.2.1",
     "xstate": "^4.32.1"
   },
   "author": "lecepin",
@@ -74,7 +74,7 @@
   },
   "build": {
     "extends": null,
-    "productName": "Lecepin WeChatVideoDownloader",
+    "productName": "WeChatVideoDownloader",
     "appId": "com.lecepin.WeChatVideoDownloader",
     "directories": {
       "output": "packs"
