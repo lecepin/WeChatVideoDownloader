@@ -39,6 +39,7 @@ export async function installCert(checkInstalled = true) {
       ]);
 
       if (result.stdout.toString().indexOf('Succeeded') > -1) {
+        fs.writeFileSync(CONFIG.INSTALL_CERT_FLAG, '');
         resolve();
       } else {
         reject();
