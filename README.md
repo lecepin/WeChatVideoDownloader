@@ -22,7 +22,7 @@
 ### 效果
 
 1. 运行本软件
-
+ 
 2. 打开视频号的视频进行播放，如下图视频：
 
 ![image](https://user-images.githubusercontent.com/11046969/169697581-6851f4d1-376b-42c5-825b-8e8101261027.png)
@@ -49,4 +49,9 @@
 
 ![image](https://user-images.githubusercontent.com/11046969/169697994-31ae9ca7-84ed-4cff-970f-af02db9557d7.png)
 
+#### Mac 系统处理
+
+由于新 Mac OS 不支持非交互式执行 sudo 命令，所以本软件初始化时会自动将命令复制到剪切板，你只需要打开 “终端”，粘贴一下就可以了，然后回车执行，效果如下图所示：
+
+![image](https://user-images.githubusercontent.com/11046969/169699030-ff03199e-a977-4d28-9311-8fc7f5773bed.png)
 
