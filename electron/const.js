@@ -32,4 +32,6 @@ export default {
   APP_CN_NAME: '微信视频号下载器',
   APP_EN_NAME: 'WeChat Video Downloader',
   REGEDIT_VBS_PATH: path.join(EXECUTABLE_PATH, './regedit-vbs'),
+  OPEN_SSL_BIN_PATH: path.join(EXECUTABLE_PATH, './openssl/openssl.exe'),
+  OPEN_SSL_CNF_PATH: path.join(EXECUTABLE_PATH, './openssl/openssl.cnf'),
 };
