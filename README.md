@@ -12,6 +12,11 @@
 
 > 内部采用代理拦截请求识别，所以本软件需要安装证书及自动开启代理（当然这些都是自动执行的，无需手动操作）。关闭此软件时会自动清除代理信息，不影响使用。
 
+
+### 下载
+
+请到 Release 中进行下载：https://github.com/lecepin/WeChatVideoDownloader/releases
+
 ---
 
 ### 效果
