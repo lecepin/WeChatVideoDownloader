@@ -50,7 +50,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@xstate/react": "^3.0.0",
-    "antd": "^4.20.5",
+    "antd": "^5.6.1",
     "axios": "^0.27.2",
     "cross-spawn": "^7.0.3",
     "electron-is-dev": "^2.0.0",
