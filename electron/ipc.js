@@ -20,9 +20,16 @@ export default function initIPC() {
     return startServer({
       interceptCallback: phase => async (req, res) => {
         if (phase === 'response' && res?._data?.headers?.['content-type'] == 'video/mp4') {
+          const fixUrl = {}
+          if(req.fullUrl().includes("video.qq.com")){
+            fixUrl.fixUrl = req.fullUrl().replace(/\/20302\//g, '/20304/');
+            fixUrl.hdUrl = fixUrl.fixUrl.replace(/(\?|&)(?!(encfilekey=|token=))[^&]+/g, '');
+          }
+
           win?.webContents?.send?.('VIDEO_CAPTURE', {
             url: req.fullUrl(),
             size: res?._data?.headers?.['content-length'] ?? 0,
+            ...fixUrl
           });
         }
       },

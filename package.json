@@ -1,6 +1,6 @@
 {
   "name": "wechat-video-downloader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "./build-electron/index.js",
   "homepage": "./",
@@ -34,7 +34,7 @@
     "concurrently": "^7.1.0",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
-    "electron": "^18.2.3",
+    "electron": "^26.1.0",
     "electron-builder": "^23.0.3",
     "electron-icon-builder": "^2.0.1",
     "husky": "^8.0.1",
