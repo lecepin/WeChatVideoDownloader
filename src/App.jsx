@@ -60,8 +60,8 @@ function App() {
                 title: '操作',
                 dataIndex: 'action',
                 key: 'action',
-                width: '200px',
-                render: (_, { url, fullFileName }) => (
+                width: '210px',
+                render: (_, { url, hdUrl, fixUrl, fullFileName,  }) => (
                   <div>
                     {fullFileName ? (
                       <Button
@@ -80,18 +80,18 @@ function App() {
                         icon={<DownloadOutlined />}
                         type="primary"
                         onClick={() => {
-                          send({ type: 'e_下载', url });
+                          send({ type: 'e_下载', url: (hdUrl || url) });
                         }}
                         size="small"
                       >
-                        下载
+                        {hdUrl ? "高清" : ""}下载
                       </Button>
                     )}
                     &nbsp; &nbsp;
                     <Button
                       icon={<PlaySquareOutlined />}
                       onClick={() => {
-                        send({ type: 'e_预览', url });
+                        send({ type: 'e_预览', url: (fixUrl || url) });
                       }}
                       size="small"
                     >

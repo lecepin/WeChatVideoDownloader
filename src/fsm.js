@@ -161,8 +161,8 @@ export default createMachine(
           .finally(() => send('e_重新检测'));
       },
       invoke_启动服务: (context, event) => send => {
-        const fnDealVideoCapture = (eName, { url, size }) => {
-          send({ type: 'e_视频捕获', url, size });
+        const fnDealVideoCapture = (eName, { url, size, ...other }) => {
+          send({ type: 'e_视频捕获', url, size, ...other });
         };
 
         ipcRenderer
@@ -217,8 +217,8 @@ export default createMachine(
         },
     },
     actions: {
-      action_视频捕获: actions.assign(({ captureList }, { size, url }) => {
-        captureList.push({ size, url, prettySize: prettyBytes(+size) });
+      action_视频捕获: actions.assign(({ captureList }, { size, url, ...other }) => {
+        captureList.push({ size, url, prettySize: prettyBytes(+size), ...other });
 
         return {
           captureList: uniqBy(captureList, 'url'),
@@ -247,7 +247,7 @@ export default createMachine(
       action_下载完成: actions.assign(({ captureList }, { fullFileName, currentUrl }) => {
         return {
           captureList: captureList.map(item => {
-            if (item.url === currentUrl) {
+            if ((item.hdUrl || item.url) === currentUrl) {
               item.fullFileName = fullFileName;
             }
             return item;
