@@ -86,7 +86,13 @@
       "public/**/*"
     ],
     "mac": {
-      "icon": "public/icon/icons/mac/icon.icns"
+      "icon": "public/icon/icons/mac/icon.icns",
+      "target": {
+        "target": "default",
+        "arch": [
+          "universal"
+        ]
+      }
     },
     "win": {
       "target": [
