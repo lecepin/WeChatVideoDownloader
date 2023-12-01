@@ -18,21 +18,7 @@ export default function initIPC() {
 
   ipcMain.handle('invoke_启动服务', async (event, arg) => {
     return startServer({
-      interceptCallback: phase => async (req, res) => {
-        if (phase === 'response' && res?._data?.headers?.['content-type'] == 'video/mp4') {
-          const fixUrl = {}
-          if(req.fullUrl().includes("video.qq.com")){
-            fixUrl.fixUrl = req.fullUrl().replace(/\/20302\//g, '/20304/');
-            fixUrl.hdUrl = fixUrl.fixUrl.replace(/(\?|&)(?!(encfilekey=|token=))[^&]+/g, '');
-          }
-
-          win?.webContents?.send?.('VIDEO_CAPTURE', {
-            url: req.fullUrl(),
-            size: res?._data?.headers?.['content-length'] ?? 0,
-            ...fixUrl
-          });
-        }
-      },
+      win: win,
       setProxyErrorCallback: err => {
         console.log('开启代理失败', err);
       },
@@ -49,9 +35,10 @@ export default function initIPC() {
     return result?.[0];
   });
 
-  ipcMain.handle('invoke_下载视频', async (event, { url, savePath }) => {
+  ipcMain.handle('invoke_下载视频', async (event, { url, decodeKey, savePath }) => {
+    console.log(url,decodeKey);
     return downloadFile(
-      url,
+      url,decodeKey,
       `${savePath}/${Date.now()}.mp4`,
       throttle(value => win?.webContents?.send?.('e_进度变化', value), 1000),
     ).catch(err => {

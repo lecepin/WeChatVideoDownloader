@@ -2,6 +2,8 @@ import { get } from 'axios';
 import { app, dialog, shell } from 'electron';
 import semver from 'semver';
 import fs from 'fs';
+import {getDecryptionArray} from './decrypt';
+import {Transform } from 'stream';
 
 // packageUrl 需要包含 { "version": "1.0.0" } 结构
 function checkUpdate(
@@ -28,7 +30,27 @@ function checkUpdate(
     .catch(err => {});
 }
 
-function downloadFile(url, fullFileName, progressCallback) {
+
+
+function xorTransform(decryptionArray) {
+  let processedBytes = 0;
+  return new Transform({
+    transform(chunk, encoding, callback) {
+      if (processedBytes < decryptionArray.length) {
+        let remaining = Math.min(decryptionArray.length - processedBytes, chunk.length);
+        for (let i = 0; i < remaining; i++) {
+          chunk[i] = chunk[i] ^ decryptionArray[processedBytes + i];
+        }
+        processedBytes += remaining;
+      }
+      this.push(chunk);
+      callback();
+    }
+  });
+}
+
+function downloadFile(url,decodeKey, fullFileName, progressCallback) {
+  const xorStream = xorTransform(getDecryptionArray(decodeKey));
   return get(url, {
     responseType: 'stream',
     headers: {
@@ -47,7 +69,7 @@ function downloadFile(url, fullFileName, progressCallback) {
 
       data.on('error', err => reject(err));
 
-      data.pipe(
+      data.pipe(xorStream).pipe(
         fs.createWriteStream(fullFileName).on('finish', () => {
           resolve({
             fullFileName,

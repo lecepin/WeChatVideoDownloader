@@ -161,8 +161,8 @@ export default createMachine(
           .finally(() => send('e_重新检测'));
       },
       invoke_启动服务: (context, event) => send => {
-        const fnDealVideoCapture = (eName, { url, size, ...other }) => {
-          send({ type: 'e_视频捕获', url, size, ...other });
+        const fnDealVideoCapture = (eName, { url, size, description, decode_key, ...other }) => {
+          send({ type: 'e_视频捕获',  url, size, description, decodeKey: decode_key, ...other });
         };
 
         ipcRenderer
@@ -190,11 +190,12 @@ export default createMachine(
           .catch(() => send('e_取消'));
       },
       invoke_下载视频:
-        ({ currentUrl, savePath }) =>
+        ({ currentUrl, savePath, decodeKey }) =>
         send => {
           ipcRenderer
             .invoke('invoke_下载视频', {
               url: currentUrl,
+              decodeKey: decodeKey,
               savePath,
             })
             .then(({ fullFileName }) => {
@@ -217,7 +218,7 @@ export default createMachine(
         },
     },
     actions: {
-      action_视频捕获: actions.assign(({ captureList }, { size, url, ...other }) => {
+      action_视频捕获: actions.assign(({ captureList }, { url, size, description, decode_key, ...other }) => {
         captureList.push({ size, url, prettySize: prettyBytes(+size), ...other });
 
         return {
@@ -229,9 +230,10 @@ export default createMachine(
           captureList: [],
         };
       }),
-      action_设置当前地址: actions.assign((_, { url }) => {
+      action_设置当前地址: actions.assign((_, { url,decodeKey }) => {
         return {
           currentUrl: url,
+          decodeKey: decodeKey,
         };
       }),
       action_存储下载位置: actions.assign((_, { data }) => {
