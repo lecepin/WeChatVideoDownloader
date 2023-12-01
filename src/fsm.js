@@ -218,8 +218,8 @@ export default createMachine(
         },
     },
     actions: {
-      action_视频捕获: actions.assign(({ captureList }, { url, size, description, decode_key, ...other }) => {
-        captureList.push({ size, url, prettySize: prettyBytes(+size), ...other });
+      action_视频捕获: actions.assign(({ captureList }, { url, size, description, decodeKey, ...other }) => {
+        captureList.push({ size, url, prettySize: prettyBytes(+size), description, decodeKey, ...other });
 
         return {
           captureList: uniqBy(captureList, 'url'),

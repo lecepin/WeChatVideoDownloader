@@ -43,9 +43,9 @@ function App() {
             dataSource={captureList}
             columns={[
               {
-                title: '视频地址（捕获中……）',
-                dataIndex: 'url',
-                key: 'url',
+                title: '视频标题（捕获中……）',
+                dataIndex: 'description',
+                key: 'description',
                 render: value => value,
                 ellipsis: true,
               },
