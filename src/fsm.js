@@ -162,7 +162,7 @@ export default createMachine(
       },
       invoke_启动服务: (context, event) => send => {
         const fnDealVideoCapture = (eName, { url, size, description, decode_key, ...other }) => {
-          send({ type: 'e_视频捕获',  url, size, description, decodeKey: decode_key, ...other });
+          send({ type: 'e_视频捕获', url, size, description, decodeKey: decode_key, ...other });
         };
 
         ipcRenderer
@@ -218,19 +218,28 @@ export default createMachine(
         },
     },
     actions: {
-      action_视频捕获: actions.assign(({ captureList }, { url, size, description, decodeKey, ...other }) => {
-        captureList.push({ size, url, prettySize: prettyBytes(+size), description, decodeKey, ...other });
+      action_视频捕获: actions.assign(
+        ({ captureList }, { url, size, description, decodeKey, ...other }) => {
+          captureList.push({
+            size,
+            url,
+            prettySize: prettyBytes(+size),
+            description,
+            decodeKey,
+            ...other,
+          });
 
-        return {
-          captureList: uniqBy(captureList, 'url'),
-        };
-      }),
+          return {
+            captureList: uniqBy(captureList, 'url'),
+          };
+        },
+      ),
       action_清空捕获记录: actions.assign(() => {
         return {
           captureList: [],
         };
       }),
-      action_设置当前地址: actions.assign((_, { url,decodeKey }) => {
+      action_设置当前地址: actions.assign((_, { url, decodeKey }) => {
         return {
           currentUrl: url,
           decodeKey: decodeKey,

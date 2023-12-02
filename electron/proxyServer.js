@@ -11,8 +11,7 @@ if (process.platform === 'win32') {
   process.env.OPENSSL_CONF = CONFIG.OPEN_SSL_CNF_PATH;
 }
 
-
-const injection_script =`
+const injection_script = `
 (function () {
     if (window.wvds !== undefined) {
         return
@@ -68,11 +67,7 @@ const injection_script =`
 })()
 `;
 
-
-export async function startServer({
-  win, 
-  setProxyErrorCallback = f => f,
-}) {
+export async function startServer({ win, setProxyErrorCallback = f => f }) {
   const port = await getPort();
 
   return new Promise(async (resolve, reject) => {
@@ -99,12 +94,12 @@ export async function startServer({
       {
         phase: 'request',
         hostname: 'aaaa.com',
-        as: 'json'
+        as: 'json',
       },
       (req, res) => {
-        res.string = "ok";
+        res.string = 'ok';
         res.statusCode = 200;
-        win?.webContents?.send?.('VIDEO_CAPTURE', req.json)
+        win?.webContents?.send?.('VIDEO_CAPTURE', req.json);
       },
     );
 
@@ -112,11 +107,11 @@ export async function startServer({
       {
         phase: 'response',
         hostname: 'res.wx.qq.com',
-        as: "string"
+        as: 'string',
       },
       async (req, res) => {
-        if (req.url.includes("polyfills.publish")) {
-          res.string = res.string + "\n" + injection_script;
+        if (req.url.includes('polyfills.publish')) {
+          res.string = res.string + '\n' + injection_script;
         }
       },
     );

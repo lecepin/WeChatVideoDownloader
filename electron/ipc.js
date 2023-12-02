@@ -36,9 +36,10 @@ export default function initIPC() {
   });
 
   ipcMain.handle('invoke_下载视频', async (event, { url, decodeKey, savePath }) => {
-    console.log(url,decodeKey);
+    console.log(url, decodeKey);
     return downloadFile(
-      url,decodeKey,
+      url,
+      decodeKey,
       `${savePath}/${Date.now()}.mp4`,
       throttle(value => win?.webContents?.send?.('e_进度变化', value), 1000),
     ).catch(err => {
