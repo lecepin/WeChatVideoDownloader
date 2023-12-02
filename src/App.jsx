@@ -43,9 +43,9 @@ function App() {
             dataSource={captureList}
             columns={[
               {
-                title: '视频地址（捕获中……）',
-                dataIndex: 'url',
-                key: 'url',
+                title: '视频标题（捕获中……）',
+                dataIndex: 'description',
+                key: 'description',
                 render: value => value,
                 ellipsis: true,
               },
@@ -61,7 +61,7 @@ function App() {
                 dataIndex: 'action',
                 key: 'action',
                 width: '210px',
-                render: (_, { url, hdUrl, fixUrl, fullFileName,  }) => (
+                render: (_, { url, decodeKey, hdUrl, fixUrl, fullFileName,  }) => (
                   <div>
                     {fullFileName ? (
                       <Button
@@ -80,7 +80,7 @@ function App() {
                         icon={<DownloadOutlined />}
                         type="primary"
                         onClick={() => {
-                          send({ type: 'e_下载', url: (hdUrl || url) });
+                          send({ type: 'e_下载', url: (hdUrl || url), decodeKey: decodeKey });
                         }}
                         size="small"
                       >
