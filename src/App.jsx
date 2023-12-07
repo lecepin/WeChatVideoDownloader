@@ -80,7 +80,12 @@ function App() {
                         icon={<DownloadOutlined />}
                         type="primary"
                         onClick={() => {
-                          send({ type: 'e_下载', url: hdUrl || url, decodeKey: decodeKey, description: description });
+                          send({
+                            type: 'e_下载',
+                            url: hdUrl || url,
+                            decodeKey: decodeKey,
+                            description: description,
+                          });
                         }}
                         size="small"
                       >

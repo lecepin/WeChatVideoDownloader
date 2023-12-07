@@ -190,7 +190,7 @@ export default createMachine(
           .catch(() => send('e_取消'));
       },
       invoke_下载视频:
-        ({ currentUrl, savePath, decodeKey, description }) => 
+        ({ currentUrl, savePath, decodeKey, description }) =>
         send => {
           ipcRenderer
             .invoke('invoke_下载视频', {

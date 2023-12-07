@@ -1,9 +1,7 @@
 import fs from 'fs';
-import os from 'os';
 import hoxy from 'hoxy';
 import getPort from 'get-port';
 import log from 'electron-log';
-import md5 from 'md5';
 import { app } from 'electron';
 import CONFIG from './const';
 import { setProxy, closeProxy } from './setProxy';
@@ -25,18 +23,24 @@ const injection_html = `
 const injection_script = `
 setTimeout(() => {
   if (window.wvds !== undefined) return;
-  ${WVDS_DEBUG ? `
+  ${
+    WVDS_DEBUG
+      ? `
   document.body.style.border = "2px solid #0000FF";
   let ele_app = document.getElementById("app");
   let ele_btn1 = document.createElement("a");
   let ele_btn2 = document.createElement("a");
   let ele_debug = document.createElement("textarea");
-  ` : ""}
+  `
+      : ''
+  }
   function debug_wvds(msg) {
-    ${WVDS_DEBUG ? `ele_debug.value += "\\n" + msg;` : ""}
+    ${WVDS_DEBUG ? `ele_debug.value += "\\n" + msg;` : ''}
   }
 
-  ${WVDS_DEBUG ? `
+  ${
+    WVDS_DEBUG
+      ? `
   ele_btn1.style = "position:absolute;top:3px;left:20px;width:80px;height:30px;cursor:pointer;";
   ele_btn1.text = "Source";
   ele_btn1.onclick = () => {
@@ -59,7 +63,9 @@ setTimeout(() => {
   ele_debug.style = "position:absolute;top:600px;left:20px;width:600px;height:300px;border:2px solid #FF00FF;";
   ele_debug.value = "Debug:\\n";
   ele_app.appendChild(ele_debug);
-  ` : ""}
+  `
+      : ''
+  }
   let receiver_url = "https://aaaa.com";
 
   function send_response_if_is_video(response) {
@@ -125,8 +131,8 @@ export async function startServer({ win, setProxyErrorCallback = f => f }) {
       .createServer({
         certAuthority: {
           key: fs.readFileSync(CONFIG.CERT_PRIVATE_PATH),
-          cert: fs.readFileSync(CONFIG.CERT_PUBLIC_PATH)
-        }
+          cert: fs.readFileSync(CONFIG.CERT_PUBLIC_PATH),
+        },
       })
       .listen(port, () => {
         setProxy('127.0.0.1', port)
@@ -162,7 +168,7 @@ export async function startServer({ win, setProxyErrorCallback = f => f }) {
       },
       async (req, res) => {
         if (req.url.includes('/web/pages/feed')) {
-          res.string = res.string.replace('</body>', injection_html + "\n</body>");
+          res.string = res.string.replace('</body>', injection_html + '\n</body>');
           res.statusCode = 200;
           console.log('inject[channels.weixin.qq.com]:', req.url, res.string.length);
         }
@@ -173,10 +179,9 @@ export async function startServer({ win, setProxyErrorCallback = f => f }) {
       {
         phase: 'response',
         hostname: 'res.wx.qq.com',
-        as: 'string'
+        as: 'string',
       },
       async (req, res) => {
-        // console.log('response[res.wx.qq.com]:', req.url);
         if (req.url.includes('wvds.inject.js')) {
           console.log('inject[res.wx.qq.com]:', req.url, res.string.length);
           res.string = injection_script;
@@ -185,6 +190,18 @@ export async function startServer({ win, setProxyErrorCallback = f => f }) {
       },
     );
 
+    proxy.intercept(
+      {
+        phase: 'response',
+        hostname: 'res.wx.qq.com',
+        as: 'string',
+      },
+      async (req, res) => {
+        if (req.url.includes('polyfills.publish')) {
+          res.string = res.string + '\n' + injection_script;
+        }
+      },
+    );
   });
 }
 
