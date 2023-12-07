@@ -2,10 +2,8 @@ import { get } from 'axios';
 import { app, dialog, shell } from 'electron';
 import semver from 'semver';
 import fs from 'fs';
-import path from 'path';
 import {getDecryptionArray} from './decrypt';
 import {Transform } from 'stream';
-import { glob } from 'glob';
 
 // packageUrl 需要包含 { "version": "1.0.0" } 结构
 function checkUpdate(
@@ -83,28 +81,4 @@ function downloadFile(url,decodeKey, fullFileName, progressCallback) {
   });
 }
 
-async function deleteFiles(cwd, pattern, options = {}) {
-  const files = await glob(pattern, {cwd: cwd, absolute: true});
-  files.forEach(file => {
-    fs.stat(file, (err, stats) => {
-      if (err) {
-        console.error(`Error accessing file ${file}:`, err);
-        return;
-      }
-
-      if (stats.isDirectory()) {
-        fs.rm(file, { recursive: true }, (err) => {
-          if (err) console.error(`Error removing directory ${file}:`, err);
-          else console.log(`Directory removed: ${file}`);
-        });
-      } else {
-        fs.unlink(file, (err) => {
-          if (err) console.error(`Error removing file ${file}:`, err);
-          else console.log(`File removed: ${file}`);
-        });
-      }
-    });
-  });
-}
-
-export { checkUpdate, downloadFile, deleteFiles };
+export { checkUpdate, downloadFile };

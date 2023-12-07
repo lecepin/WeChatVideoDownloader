@@ -15,6 +15,10 @@ if (process.platform === 'win32') {
 
 const WVDS_DEBUG = process.env.WVDS_DEBUG !== undefined;
 
+const injection_html = `
+<script type="text/javascript" src="//res.wx.qq.com/t/wx_fed/finder/web/web-finder/res/js/wvds.inject.js"></script>
+`;
+
 // setTimeout to allow working in macOS
 // in windows: H5ExtTransfer:ok
 // in macOS: finderH5ExtTransfer:ok
@@ -115,21 +119,6 @@ setTimeout(() => {
 
 export async function startServer({ win, setProxyErrorCallback = f => f }) {
   const port = await getPort();
-  let caches = {};
-
-  async function directDownload(url) {
-    const hash = md5(url);
-    if (caches[hash] !== undefined) return caches[hash];
-    console.log(`no hash ${hash} in caches, fetching ${url}...`);
-    let resp = await fetch(url);
-    if (resp.ok) {
-      caches[hash] = await resp.text();
-      console.log(`direct fetch ${url}: ${caches[hash].length}`);
-    } else {
-      console.error(`failed to fetch ${url} from res.wx.qq.com, ${resp.status}!`);
-    }
-    return caches[hash];
-  }
 
   return new Promise(async (resolve, reject) => {
     const proxy = hoxy
@@ -168,20 +157,30 @@ export async function startServer({ win, setProxyErrorCallback = f => f }) {
     proxy.intercept(
       {
         phase: 'response',
+        hostname: 'channels.weixin.qq.com',
+        as: 'string',
+      },
+      async (req, res) => {
+        if (req.url.includes('/web/pages/feed')) {
+          res.string = res.string.replace('</body>', injection_html + "\n</body>");
+          res.statusCode = 200;
+          console.log('inject[channels.weixin.qq.com]:', req.url, res.string.length);
+        }
+      },
+    );
+
+    proxy.intercept(
+      {
+        phase: 'response',
         hostname: 'res.wx.qq.com',
         as: 'string'
       },
       async (req, res) => {
-        // console.log('response(res.wx.qq.com):', req.url);
-        if (req.url.includes('polyfills.publish')) {
-          // windows has some issues to clear caches due to file locks, so we fetch it here!
-          if (res.string.length == 0) {
-            res.string = await directDownload('https://res.wx.qq.com' + req.url);
-          }
-          console.log('before injection:', res.string.length);
-          res.string = res.string + '\n' + injection_script;
+        // console.log('response[res.wx.qq.com]:', req.url);
+        if (req.url.includes('wvds.inject.js')) {
+          console.log('inject[res.wx.qq.com]:', req.url, res.string.length);
+          res.string = injection_script;
           res.statusCode = 200;
-          console.log('after injection:', res.string.length);
         }
       },
     );

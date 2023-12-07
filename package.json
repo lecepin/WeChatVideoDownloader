@@ -56,7 +56,6 @@
     "electron-is-dev": "^2.0.0",
     "electron-log": "^4.4.7",
     "get-port": "^6.1.2",
-    "glob": "^10.3.10",
     "hoxy": "^3.3.1",
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4",

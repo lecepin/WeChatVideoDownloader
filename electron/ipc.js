@@ -1,11 +1,9 @@
-import os from 'os';
-import path from 'path';
 import { ipcMain, dialog } from 'electron';
 import log from 'electron-log';
 import { throttle } from 'lodash';
 import { startServer } from './proxyServer';
 import { installCert, checkCertInstalled } from './cert';
-import { downloadFile, deleteFiles } from './utils';
+import { downloadFile } from './utils';
 
 let win;
 
@@ -19,23 +17,6 @@ export default function initIPC() {
   });
 
   ipcMain.handle('invoke_启动服务', async (event, arg) => {
-    let cachePath;
-    let pattern;
-    if (process.platform === 'darwin') {
-      cachePath = 'Library/Containers/com.tencent.xinWeChat/Data/.wxapplet/web/profiles/';
-      pattern = 'multitab**/Cache/Cache_Data';
-    } else {
-      cachePath = 'AppData/Roaming/Tencent/WeChat/radium/web/profiles/';
-      pattern = 'multitab**/Cache/Cache_Data/**';
-    }
-    cachePath = path.join(os.homedir(), cachePath);
-    console.log('cwd:', cachePath);
-    // delete cached polyfillxxxx.js files first (the proxy.intercept to enforce no-cache request header not working!)
-    // deleteFiles(cachePath, [/.*LOCK/], /zn.POLYFILL/);
-    // delete Cache_Data dirs, works well in macOS
-    // in Windows we need to run this tool before wechat
-    // otherwise the cache can't be cleared thoroughly due to file locks and the tool can't capture videos later!
-    process.platform === 'darwin' && await deleteFiles(cachePath, pattern);
     return startServer({
       win: win,
       setProxyErrorCallback: err => {
