@@ -28,3 +28,5 @@ yarn.lock
 package-lock.json
 
 .parcel-cache
+.history
+test.mjs
