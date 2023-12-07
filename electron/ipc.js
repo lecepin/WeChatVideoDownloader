@@ -35,12 +35,19 @@ export default function initIPC() {
     return result?.[0];
   });
 
-  ipcMain.handle('invoke_下载视频', async (event, { url, decodeKey, savePath }) => {
-    console.log(url, decodeKey);
+  ipcMain.handle('invoke_下载视频', async (event, { url, decodeKey, savePath, description }) => {
+    let re = /(?:^|\s)(?!#\S+)\s*([^#\s]*)/;
+    let m = description.match(re);
+    let fileName = m && m.length > 1 ? m[1].replaceAll(/[,，]/g, "_") : description;
+    console.log('description:', description);
+    console.log("fileName:", fileName);
+    console.log("url:", url)
+    console.log("decodeKey:", decodeKey);
     return downloadFile(
       url,
       decodeKey,
-      `${savePath}/${Date.now()}.mp4`,
+      // `${savePath}/${Date.now()}.mp4`,
+      `${savePath}/${fileName}.mp4`,
       throttle(value => win?.webContents?.send?.('e_进度变化', value), 1000),
     ).catch(err => {
       console;

@@ -190,13 +190,14 @@ export default createMachine(
           .catch(() => send('e_取消'));
       },
       invoke_下载视频:
-        ({ currentUrl, savePath, decodeKey }) =>
+        ({ currentUrl, savePath, decodeKey, description }) => 
         send => {
           ipcRenderer
             .invoke('invoke_下载视频', {
               url: currentUrl,
-              decodeKey: decodeKey,
+              decodeKey,
               savePath,
+              description,
             })
             .then(({ fullFileName }) => {
               send({ type: 'e_下载完成', fullFileName, currentUrl });
@@ -239,10 +240,11 @@ export default createMachine(
           captureList: [],
         };
       }),
-      action_设置当前地址: actions.assign((_, { url, decodeKey }) => {
+      action_设置当前地址: actions.assign((_, { url, decodeKey, description }) => {
         return {
           currentUrl: url,
           decodeKey: decodeKey,
+          description: description,
         };
       }),
       action_存储下载位置: actions.assign((_, { data }) => {

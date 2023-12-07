@@ -61,7 +61,7 @@ function App() {
                 dataIndex: 'action',
                 key: 'action',
                 width: '210px',
-                render: (_, { url, decodeKey, hdUrl, fixUrl, fullFileName }) => (
+                render: (_, { url, decodeKey, hdUrl, fixUrl, description, fullFileName }) => (
                   <div>
                     {fullFileName ? (
                       <Button
@@ -80,7 +80,7 @@ function App() {
                         icon={<DownloadOutlined />}
                         type="primary"
                         onClick={() => {
-                          send({ type: 'e_下载', url: hdUrl || url, decodeKey: decodeKey });
+                          send({ type: 'e_下载', url: hdUrl || url, decodeKey: decodeKey, description: description });
                         }}
                         size="small"
                       >
