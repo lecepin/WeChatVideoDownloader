@@ -9,7 +9,7 @@
 - 支持 Win/Mac
 
 
-![image](https://user-images.githubusercontent.com/11046969/169732657-f4643cf1-e893-4db9-a31f-94c8bfed0bd2.png)
+![image](https://github.com/lecepin/WeChatVideoDownloader/assets/11046969/b5fa47fd-5ca2-4b4e-a036-432562ca0ec6)
 
 
 
