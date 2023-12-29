@@ -9,7 +9,7 @@
 - 支持 Win/Mac
 
 
-![image](https://user-images.githubusercontent.com/11046969/169732657-f4643cf1-e893-4db9-a31f-94c8bfed0bd2.png)
+![image](https://github.com/lecepin/WeChatVideoDownloader/assets/11046969/b5fa47fd-5ca2-4b4e-a036-432562ca0ec6)
 
 
 
@@ -62,5 +62,14 @@
 由于新 Mac OS 不支持非交互式执行 sudo 命令，所以本软件初始化时会自动将命令复制到剪切板，你只需要打开 “终端”，粘贴一下就可以了，然后回车执行，效果如下图所示：
 
 ![image](https://user-images.githubusercontent.com/11046969/169732943-4815fa79-dda4-4bfd-904c-70d8e625d8f6.png)
+
+---
+### 联系
+
+微信：
+
+<img src="https://github.com/lecepin/WeChatVideoDownloader/assets/11046969/f0ec7f3b-6c0a-4a64-bf83-ef5d633ea68f" width="250" />
+
+(请备注来源)
 
 
