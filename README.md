@@ -74,4 +74,13 @@
 
 > 添加微信提示添加好友太频繁，无法添加，请在 [此处](https://github.com/lecepin/WeChatVideoDownloader/issues/115) 留言。
 
+---
+
+<img src="https://github.com/lecepin/WeChatVideoDownloader/assets/11046969/73b42ddf-c946-4136-befb-58646d344b9d" width="400" />
+
+公众号回复：“视频号”获得新版本下载地址。
+
+
+
+
 
