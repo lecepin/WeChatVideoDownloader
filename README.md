@@ -66,15 +66,6 @@
 ---
 ### 联系
 
-微信：
-
-<img src="https://github.com/lecepin/WeChatVideoDownloader/assets/11046969/f0ec7f3b-6c0a-4a64-bf83-ef5d633ea68f" width="250" />
-
-(请备注来源)
-
-> 添加微信提示添加好友太频繁，无法添加，请在 [此处](https://github.com/lecepin/WeChatVideoDownloader/issues/115) 留言。
-
----
 
 <img src="https://github.com/lecepin/WeChatVideoDownloader/assets/11046969/73b42ddf-c946-4136-befb-58646d344b9d" width="400" />
 
